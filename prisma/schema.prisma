@@ -67,3 +67,9 @@ model Champion {
     origin       String
     cost         Int
 }
+
+model Trait {
+    traitName   String   @id @default(cuid())
+    breakpoints Int[]
+    icons       String[]
+}
