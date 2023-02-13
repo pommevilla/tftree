@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Champion } from "../components/Champion.interface";
 import { number, string } from "prop-types";
 import TraitTable from "../components/TraitTable";
+import { ResetButton } from "../components/ResetButton";
 
 const someChampions: Champion[] = [
   {
@@ -16,6 +17,12 @@ const someChampions: Champion[] = [
     name: "Blitzrank",
     origin: ["A.D.M.I.N."],
     class: ["Brawler"],
+  },
+  {
+    src: "/imgs/icons/champions/tft8_janna_square.tft_set8.png",
+    name: "Janna",
+    origin: ["Civilian"],
+    class: ["Forecaster", "Spellslinger"],
   },
   {
     src: "/imgs/icons/champions/tft8_belveth_square.tft_set8.png",
@@ -99,21 +106,15 @@ const Home: NextPage = () => {
 
   const selectChamp = (champion: Champion) => {
     setSelectedChamps((oldArray) => [...oldArray, champion]);
-    // console.log("Selected champs:" + selectedChamps);
-    // setTraitCounts(() => calculateTraits(selectedChamps));
-    calculateTraits(selectedChamps);
-    // console.log(traitCounts);
   };
 
   const deselectChamp = (index: number) => {
     setSelectedChamps(selectedChamps.filter((item, idx) => idx !== index));
-    // setTraitCounts(() => calculateTraits(selectedChamps));
-    calculateTraits(selectedChamps);
-    // console.log(traitCounts);
   };
 
   const resetSelectedChamps = () => {
     setSelectedChamps([]);
+    setTraitCounts({});
   };
 
   const calculateTraits = (selectedChamps: Array<Champion>) => {
@@ -122,7 +123,6 @@ const Home: NextPage = () => {
     const uniqueChamps = [...new Set(selectedChamps)];
 
     for (const champ of uniqueChamps) {
-      // console.log("Champ origin: " + champ.origin);
       for (var innerTrait of [...champ.origin, ...champ.class]) {
         if (innerTrait) {
           newTraitCounts[innerTrait] = newTraitCounts[innerTrait]
@@ -131,14 +131,11 @@ const Home: NextPage = () => {
         }
       }
     }
-
-    setTraitCounts(newTraitCounts);
     return newTraitCounts;
   };
 
   useEffect(() => {
-    // console.log("here");
-    console.log(traitCounts);
+    setTraitCounts(calculateTraits(selectedChamps));
   }, [selectedChamps]);
 
   return (
@@ -152,61 +149,48 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center gap-8 text-black dark:bg-gray-800 dark:text-white">
-        {/* <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gradient-to-b from-gray-500 to-indigo-500 dark:text-white"> */}
-        <h1 className="text-4xl text-white">
-          TFTree: Team builder and explorer
-        </h1>
+        <h1 className="py-5 text-4xl">Team builder</h1>
 
         {/* Upper half */}
-        <div className="flex gap-20">
-          <div>
-            <h2 className="text-2xl text-white">Selected champs</h2>
-          </div>
-          <div>
-            <button
-              type="button"
-              className="mr-2 inline-flex items-center gap-2 rounded-lg bg-blue-700 px-5 py-1.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-              onClick={resetSelectedChamps}
-            >
-              <svg
-                className="h-6 w-6 dark:text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
-                ></path>
-              </svg>
-              Reset
-            </button>
-          </div>
-        </div>
-
         <div className="flex">
-          <div>
-            {/* Selected Champs */}
-            <div className="grid grid-cols-5 gap-1">
-              {selectedChamps.map((champion, index) => (
-                <div
-                  key={index}
-                  className="w-32 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
-                  onClick={() => deselectChamp(index)}
-                >
-                  <img
-                    className="rounded-t-lg"
-                    src={champion.src}
-                    alt={champion.name}
-                    title={champion.name}
-                  />
+          {/* Left half */}
+          <div className="">
+            {/* Buttons */}
+            <div className="flex items-center justify-center gap-20 py-5">
+              <div>
+                <h2 className="text-2xl text-white">Selected champs</h2>
+              </div>
+              <div>
+                <ResetButton onClick={resetSelectedChamps} />
+              </div>
+            </div>
+
+            <div className="flex">
+              <div>
+                <div className="grid grid-cols-5 gap-1">
+                  {selectedChamps.map((champion, index) => (
+                    <div
+                      key={index}
+                      className="w-32 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
+                      onClick={() => deselectChamp(index)}
+                    >
+                      <img
+                        className="rounded-t-lg"
+                        src={champion.src}
+                        alt={champion.name}
+                        title={champion.name}
+                      />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-          {/* Current traits */}
+
+          {/* Right half */}
+          <div className="py-5 px-5">
+            <TraitTable traitCounts={traitCounts} />
+          </div>
         </div>
 
         {/* Bottom half */}
@@ -228,11 +212,6 @@ const Home: NextPage = () => {
             </div>
           ))}
         </div>
-
-        {/* Traits */}
-        <h3 className="text-xl text-white">Traits</h3>
-
-        <TraitTable traitCounts={traitCounts} />
       </main>
     </>
   );
