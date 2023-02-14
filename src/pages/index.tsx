@@ -148,7 +148,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 text-black dark:bg-gray-800 dark:text-white">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800 text-neutral-100">
         <h1 className="py-5 text-4xl">Team builder</h1>
 
         {/* Upper half */}
@@ -165,24 +165,22 @@ const Home: NextPage = () => {
               </div>
             </div>
 
-            <div className="flex">
-              <div>
-                <div className="grid grid-cols-5 gap-1">
-                  {selectedChamps.map((champion, index) => (
-                    <div
-                      key={index}
-                      className="w-32 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
-                      onClick={() => deselectChamp(index)}
-                    >
-                      <img
-                        className="rounded-t-lg"
-                        src={champion.src}
-                        alt={champion.name}
-                        title={champion.name}
-                      />
-                    </div>
-                  ))}
-                </div>
+            <div className="">
+              <div className="grid grid-cols-5 gap-1">
+                {selectedChamps.map((champion, index) => (
+                  <div
+                    key={index}
+                    className="w-32 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
+                    onClick={() => deselectChamp(index)}
+                  >
+                    <img
+                      className="rounded-t-lg"
+                      src={champion.src}
+                      alt={champion.name}
+                      title={champion.name}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
