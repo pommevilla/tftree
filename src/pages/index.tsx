@@ -1,111 +1,33 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 
-import { api } from "../utils/api";
-import { ChampionCard } from "../components/ChampionCard";
 import { useEffect, useState } from "react";
 import { Champion } from "../components/Champion.interface";
-import { number, string } from "prop-types";
 import TraitTable from "../components/TraitTable";
 import { ResetButton } from "../components/ResetButton";
+import { SelectorTabsView } from "../components/SelectorTabsView";
 
-const someChampions: Champion[] = [
-  {
-    src: "/imgs/icons/champions/tft8_blitzcrank_square.tft_set8.png",
-    name: "Blitzrank",
-    origin: ["A.D.M.I.N."],
-    class: ["Brawler"],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_janna_square.tft_set8.png",
-    name: "Janna",
-    origin: ["Civilian"],
-    class: ["Forecaster", "Spellslinger"],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_belveth_square.tft_set8.png",
-    name: "Bel'Veth",
-    origin: ["Threat"],
-    class: [""],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_fiddlesticks_square.tft_set8.png",
-    name: "Fiddlesticks",
-    origin: ["Threat", "Corrupted"],
-    class: [""],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_jinx_square.tft_set8.png",
-    name: "Jinx",
-    origin: ["Anima Squad"],
-    class: ["Prankster"],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_leblanc_square.tft_set8.png",
-    name: "LeBlanc",
-    origin: ["A.D.M.I.N."],
-    class: ["Spellslinger", "Hacker"],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_chogath_square.tft_set8.png",
-    name: "Cho'Gath",
-    origin: ["Threat"],
-    class: [""],
-  },
-  {
-    src: "/imgs/icons/champions/tft8_missfortune_square.tft_set8.png",
-    name: "Miss Fortune",
-    origin: ["Anima Squad"],
-    class: ["Ace"],
-  },
-  {
-    src: "imgs/icons/champions/tft8_soraka_square.tft_set8.png",
-    name: "Soraka",
-    origin: ["A.D.M.I.N."],
-    class: ["Heart"],
-  },
-  {
-    src: "imgs/icons/champions/tft8_vi_square.tft_set8.png",
-    name: "Vi",
-    origin: ["The Underground"],
-    class: ["Aegis", "Brawler"],
-  },
-  {
-    src: "imgs/icons/champions/tft8_urgot_square.tft_set8.png",
-    name: "Urgot",
-    origin: ["Threat"],
-    class: [""],
-  },
-  {
-    src: "imgs/icons/champions/tft8_kaisa_square.tft_set8.png",
-    name: "Kai'sa",
-    origin: ["Star Guardian"],
-    class: ["Recon"],
-  },
-  {
-    src: "imgs/icons/champions/tft8_sejuani_square.tft_set8.png",
-    name: "Sejuani",
-    origin: ["Laser Corps"],
-    class: ["Brawler"],
-  },
-  {
-    src: "imgs/icons/champions/tft8_mordekaiser_square.tft_set8.png",
-    name: "Mordekaiser",
-    origin: ["Laser Corps"],
-    class: ["Ace"],
-  },
-];
+import { allChampions } from "../dbs/Champions";
+import { allAugments } from "../dbs/Augments";
+import { SelectCardGrid } from "../components/SelectCardGrid";
+import { AugmentGrid } from "../components/AugmentGrid";
+import { Augment } from "../components/Augment.interface";
+import { SelectedAugmentsTab } from "../components/SelectedAugmentsTab";
 
 const Home: NextPage = () => {
   const [selectedChamps, setSelectedChamps] = useState<Champion[]>([]);
+  const [selectedAugments, setSelectedAugments] = useState<Augment[]>([]);
   const [traitCounts, setTraitCounts] = useState<{ [trait: string]: number }>(
     {}
   );
 
   const selectChamp = (champion: Champion) => {
     setSelectedChamps((oldArray) => [...oldArray, champion]);
+  };
+
+  const selectAugment = (augment: Augment) => {
+    if (selectedAugments.length >= 3) return;
+    setSelectedAugments((oldArray) => [...oldArray, augment]);
   };
 
   const deselectChamp = (index: number) => {
@@ -115,6 +37,7 @@ const Home: NextPage = () => {
   const resetSelectedChamps = () => {
     setSelectedChamps([]);
     setTraitCounts({});
+    setSelectedAugments([]);
   };
 
   const calculateTraits = (selectedChamps: Array<Champion>) => {
@@ -138,6 +61,13 @@ const Home: NextPage = () => {
     setTraitCounts(calculateTraits(selectedChamps));
   }, [selectedChamps]);
 
+  const AugmentDisplayGrid = (
+    <AugmentGrid augmentList={allAugments} onClick={selectAugment} />
+  );
+  const ChampionGrid = (
+    <SelectCardGrid championList={allChampions} onClick={selectChamp} />
+  );
+
   return (
     <>
       <Head>
@@ -148,23 +78,24 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800 text-neutral-100">
-        <h1 className="py-5 text-4xl">Team builder</h1>
+      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800 ">
+        {/* Augments */}
 
         {/* Upper half */}
-        <div className="flex">
+        <div className="flex pt-5">
           {/* Left half */}
-          <div className="">
+          <div className="h-1/2">
             {/* Buttons */}
             <div className="flex items-center justify-center gap-20 py-5">
               <div>
-                <h2 className="text-2xl text-white">Selected champs</h2>
+                <h2 className="text-2xl text-white">Selected champions</h2>
               </div>
               <div>
                 <ResetButton onClick={resetSelectedChamps} />
               </div>
             </div>
 
+            {/* Current selected team */}
             <div className="">
               <div className="grid grid-cols-5 gap-1">
                 {selectedChamps.map((champion, index) => (
@@ -186,29 +117,23 @@ const Home: NextPage = () => {
           </div>
 
           {/* Right half */}
-          <div className="py-5 px-5">
-            <TraitTable traitCounts={traitCounts} />
+          <div className="h-1/2 py-5 px-5">
+            <div className="pb-6">
+              <SelectedAugmentsTab augmentList={selectedAugments} />
+            </div>
+            <div>
+              <TraitTable traitCounts={traitCounts} />
+            </div>
           </div>
         </div>
-
         {/* Bottom half */}
-        {/* Champ roster */}
-        <h2 className="text-2xl text-white">Champions</h2>
-        <div className="grid grid-cols-10 gap-1">
-          {someChampions.map((champion, index) => (
-            <div
-              key={index}
-              className="w-24 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
-              onClick={() => selectChamp(champion)}
-            >
-              <img
-                className="rounded-t-lg"
-                src={champion.src}
-                alt={champion.name}
-                title={champion.name}
-              />
-            </div>
-          ))}
+        <div>
+          <SelectorTabsView
+            tabs={[
+              { name: "Champions", content: ChampionGrid },
+              { name: "Augments", content: AugmentDisplayGrid },
+            ]}
+          />
         </div>
       </main>
     </>

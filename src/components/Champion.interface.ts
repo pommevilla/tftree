@@ -3,4 +3,5 @@ export interface Champion {
   name: string;
   origin: string[];
   class: string[];
+  cost: number;
 }

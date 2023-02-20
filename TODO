@@ -1,3 +1,26 @@
 # User stories
 
-* As a user, I can click on champion pictures and create a team
+## As a user...
+
+- [x] I can click on champion pictures and create a team
+- [x] I can click and remove champions from a team
+- [x] I can see the trait counts of my team
+- [] When I mouse over the table of traits, it highlights the champs in the team that contribute to that trait
+
+
+
+
+#### Old button
+        <div>
+          <label
+            htmlFor="small-input"
+            className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Filter Champion
+          </label>
+          <input
+            type="text"
+            id="small-input"
+            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-xs"
+          />
+        </div>
