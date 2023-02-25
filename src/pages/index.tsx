@@ -20,6 +20,7 @@ const Home: NextPage = () => {
   const [traitCounts, setTraitCounts] = useState<{ [trait: string]: number }>(
     {}
   );
+  const [hoveredTrait, setHoveredTrait] = useState("");
 
   const selectChamp = (champion: Champion) => {
     setSelectedChamps((oldArray) => [...oldArray, champion]);
@@ -78,7 +79,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800 ">
+      <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800">
         {/* Augments */}
 
         {/* Upper half */}
@@ -96,12 +97,19 @@ const Home: NextPage = () => {
             </div>
 
             {/* Current selected team */}
-            <div className="">
+            <div className="current-team">
               <div className="grid grid-cols-5 gap-1">
                 {selectedChamps.map((champion, index) => (
                   <div
                     key={index}
-                    className="w-32 cursor-pointer rounded-lg border-2 border-gray-100 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800"
+                    className={`${
+                      [...champion.origin, ...champion.class].includes(
+                        hoveredTrait
+                      ) && hoveredTrait
+                        ? "highlighted"
+                        : "non-highlighted"
+                    } champion-card
+                    `}
                     onClick={() => deselectChamp(index)}
                   >
                     <img
@@ -122,7 +130,7 @@ const Home: NextPage = () => {
               <SelectedAugmentsTab augmentList={selectedAugments} />
             </div>
             <div>
-              <TraitTable traitCounts={traitCounts} />
+              <TraitTable traitCounts={traitCounts} onHover={setHoveredTrait} />
             </div>
           </div>
         </div>

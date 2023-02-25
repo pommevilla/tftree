@@ -8,7 +8,7 @@ body {
 }
 
 .SelectorTabsView .tabs  {
-    @apply inline-flex p-5 text-gray-400 rounded-t-lg  gap-16 w-full
+    @apply inline-flex p-5 text-gray-400 rounded-t-lg  gap-24 w-full
 }
 
 .SelectorTabsView .tabs .active-tab {
@@ -17,4 +17,12 @@ body {
 
 .SelectorTabsView .content {
     @apply w-full
+}
+
+.current-team .champion-card {
+    @apply w-32 cursor-pointer rounded-lg border-4 shadow-md border-gray-700 bg-gray-800
+}
+
+.current-team .highlighted {
+    @apply border-4 border-red-600 
 }
