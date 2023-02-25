@@ -19,6 +19,7 @@ export const SelectorTabsView = ({ tabs = [] }: {}) => {
             {tab.name}
           </label>
         ))}
+        <label className="right-0">Search</label>
       </div>
       <div className="content">{tabs[activeTabIndex].content}</div>
     </div>

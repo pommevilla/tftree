@@ -21,6 +21,7 @@ const Home: NextPage = () => {
     {}
   );
   const [hoveredTrait, setHoveredTrait] = useState("");
+  const [searchString, setSearchString] = useState("");
 
   const selectChamp = (champion: Champion) => {
     setSelectedChamps((oldArray) => [...oldArray, champion]);
@@ -39,6 +40,8 @@ const Home: NextPage = () => {
     setSelectedChamps([]);
     setTraitCounts({});
     setSelectedAugments([]);
+    setSearchString("");
+    document.getElementById("searchstringbox").value = "";
   };
 
   const calculateTraits = (selectedChamps: Array<Champion>) => {
@@ -62,12 +65,24 @@ const Home: NextPage = () => {
     setTraitCounts(calculateTraits(selectedChamps));
   }, [selectedChamps]);
 
+  const lowercaseSearch = searchString.toLocaleLowerCase();
+
+  const filteredChampions = allChampions.filter((champion) =>
+    searchString !== ""
+      ? ["name", "origin", "class"].some((key) =>
+          champion[key].toString().toLowerCase().includes(lowercaseSearch)
+        )
+      : true
+  );
+
   const AugmentDisplayGrid = (
     <AugmentGrid augmentList={allAugments} onClick={selectAugment} />
   );
   const ChampionGrid = (
-    <SelectCardGrid championList={allChampions} onClick={selectChamp} />
+    <SelectCardGrid championList={filteredChampions} onClick={selectChamp} />
   );
+
+  console.log(lowercaseSearch);
 
   return (
     <>
@@ -81,6 +96,17 @@ const Home: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-800">
         {/* Augments */}
+
+        <form>
+          <label>
+            <input
+              id={"searchstringbox"}
+              defaultValue={"Filter champions, traits..."}
+              className="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              onChange={(e) => setSearchString(e.target.value)}
+            />
+          </label>
+        </form>
 
         {/* Upper half */}
         <div className="flex pt-5">
